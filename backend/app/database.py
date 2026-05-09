@@ -45,7 +45,7 @@ def init_db() -> None:
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
             name        TEXT NOT NULL,
             location    TEXT NOT NULL,
-            address     TEXT DEFAULT '',
+            address     TEXT DEFAULT '[]',
             lat         REAL,
             lon         REAL,
             description TEXT DEFAULT '',
@@ -95,7 +95,7 @@ def init_db() -> None:
 def insert_store(
     name: str,
     location: str,
-    address: str = "",
+    address: str = "[]",
     lat: float | None = None,
     lon: float | None = None,
     description: str = "",

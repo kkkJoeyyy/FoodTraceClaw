@@ -25,6 +25,18 @@ services:
       - backend
     restart: unless-stopped
 
+  wechaty-bridge:
+    build: ./wechaty-bridge
+    environment:
+      - BACKEND_URL=http://backend:8000
+      - WECHATY_PUPPET=${WECHATY_PUPPET:-wechaty-puppet-wechat4u}
+      - WECHATY_TOKEN=${WECHATY_TOKEN:-}
+    depends_on:
+      - backend
+    profiles:
+      - wechat
+    restart: unless-stopped
+
   ollama:
     image: ollama/ollama:latest
     ports:

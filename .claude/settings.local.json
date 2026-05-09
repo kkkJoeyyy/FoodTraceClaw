@@ -21,7 +21,24 @@
       "Bash(curl -s -N --max-time 10 -X POST http://localhost:8000/api/chat -H 'Content-Type: application/json' -d '{\"message\":\"佛山有什么好吃的？\",\"session_id\":\"test_fs\"}')",
       "Bash(python3 -c ' *)",
       "Bash(curl -s -N --max-time 10 -X POST http://localhost:8000/api/chat -H 'Content-Type: application/json' -d '{\"message\":\"广州有什么好吃的？\",\"session_id\":\"test_gz\"}')",
-      "Bash(openspec archive *)"
+      "Bash(openspec archive *)",
+      "Bash(openspec new *)",
+      "Bash(openspec status *)",
+      "Bash(openspec instructions *)",
+      "Bash(lsof -ti:8080)",
+      "Bash(xargs kill -9)",
+      "Bash(npx skills *)",
+      "Bash(curl -s http://localhost:8000/api/stats)",
+      "Bash(python3 -m json.tool)",
+      "Bash(pkill -f \"tsx.*bot.ts\")",
+      "Bash(pkill -f \"wechaty\")",
+      "Bash(curl -s \"https://nominatim.openstreetmap.org/search?q=%E5%B9%BF%E4%B8%9C%E7%9C%81%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%A4%A9%E6%B2%B3%E5%8C%BA&format=json&limit=1\" --max-time 5)",
+      "Bash(grep \"AMAP\" .env)",
+      "Bash(grep \"AMAP\" ../.env)",
+      "Bash(curl -s ifconfig.me)",
+      "Bash(curl -s ip.sb)",
+      "Bash(curl -s ipinfo.io/ip)",
+      "Bash(python3)"
     ],
     "additionalDirectories": [
       "/Users/wuchuyi/Library/Mobile Documents/com~apple~CloudDocs/develop_projects/sdd_projects/FoodTraceClaw/openspec/changes/mvp-food-chat"

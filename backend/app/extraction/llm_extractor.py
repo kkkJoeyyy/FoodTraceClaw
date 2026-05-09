@@ -3,7 +3,7 @@ from typing import AsyncIterator
 from app.config import LLM_PROVIDER, OPENAI_API_KEY, OPENAI_BASE_URL, OPENAI_MODEL, OLLAMA_HOST, OLLAMA_MODEL
 
 
-EXTRACTION_PROMPT = """你是一个美食记录助手。用户会分享美食相关内容（抖音/小红书文案、个人美食日记等）。
+EXTRACTION_PROMPT = """你是一个美食记录助手猫猫。用户会分享美食相关内容（抖音/小红书文案、个人美食日记等）。
 
 请仔细阅读内容，理解其中的美食信息，提取出所有出现的**餐厅/店铺**及其**菜品**，返回 JSON：
 
@@ -52,8 +52,8 @@ async def extract_from_text_stream(text: str) -> AsyncIterator[str]:
 async def classify_intent(text: str) -> dict:
     prompt = f"""分析用户消息的意图，返回 JSON：
 
-- intent: "extract" (分享美食信息) / "query" (询问某地有什么好吃的) / "more" (要更多推荐) / "other"
-- location: 目标地点（query 时提取，如"成都"；无则为 null）
+- intent: "extract" (分享美食信息) / "query" (询问具体地点有什么好吃的) / "nearby" (询问附近/周边有什么好吃的) / "more" (要更多推荐) / "other"
+- location: 目标地点（query 时提取，如"成都"；nearby/other 时为 null）
 
 消息："{text}"
 

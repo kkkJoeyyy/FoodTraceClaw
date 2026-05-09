@@ -9,7 +9,8 @@ if _env_path.exists():
             line = line.strip()
             if line and not line.startswith("#") and "=" in line:
                 key, _, value = line.partition("=")
-                value = value.strip().strip('"').strip("'")
+                # Strip inline comments
+                value = value.split("#")[0].strip().strip('"').strip("'")
                 if key.strip() not in os.environ:
                     os.environ[key.strip()] = value
 

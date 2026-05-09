@@ -38,6 +38,8 @@ class StoreOut(BaseModel):
     source_type: str
     created_at: str
     dishes: list[DishOut] = []
+    distance_km: float | None = None
+    closest_addr: str = ""
 
 
 class ChatRequest(BaseModel):
