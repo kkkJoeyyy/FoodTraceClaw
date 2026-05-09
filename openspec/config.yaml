@@ -1,0 +1,92 @@
+schema: spec-driven
+
+context: |
+  # FoodTrace 项目上下文
+
+  ## 项目定位
+  个人美食记录与推荐助手。用户粘贴抖音/小红书分享文案或截图，
+  LLM/VL 自动提取店铺+菜品信息入库；按地点查询时一次返回全部匹配店铺，
+  前端本地分页显示 Top 5，点「查看更多」即时展开。
+
+  ## 技术栈
+
+  ### 后端
+  - 框架: Python FastAPI，异步 async/await
+  - 数据库: SQLite 3 (标准库 sqlite3)，同步调用，FastAPI 自动线程池运行
+  - 数据库文件: 本地 `./data/foodtrace.db`，Docker 内 `/app/data/foodtrace.db`
+  - LLM 双通道:
+    - OpenAI 兼容 API (DashScope / OpenAI / 任意兼容服务)
+    - Ollama 本地模型 (可选，Docker profile)
+  - VL 多模态: 复用 LLM 通道，使用支持视觉的模型 (如 qwen3.5-omni-plus)
+  - 地理编码: OSM Nominatim (免费) / 高德 API (中文精度更高)
+  - 流式响应: SSE (Server-Sent Events, text/event-stream)
+
+  ### 前端
+  - React 18 + TypeScript + Vite
+  - 无第三方 UI 库，纯 CSS-in-JS 内联样式
+  - SSE 客户端: fetch + ReadableStream 解析 text/event-stream
+  - session_id: 生成 UUID 存 localStorage
+  - 开发代理: Vite proxy /api → localhost:8000
+
+  ### 部署
+  - Docker Compose: backend (uvicorn :8000) + frontend (nginx :80 → :3000) + 可选 ollama (:11434)
+  - SQLite 数据通过 volume `./data:/app/data` 持久化
+
+  ## 数据库 Schema
+
+  ```
+  stores (id, name, location, address, lat, lon, description, category,
+          source_text, source_type, created_at)
+  dishes  (id, store_id FK→stores ON DELETE CASCADE, name, description, created_at)
+          UNIQUE INDEX on (store_id, name)
+  recommendations (id, session_id, store_id FK→stores, location_query, shown_at)
+  ```
+
+  ## 核心流程
+
+  ### 录入 (extract)
+  用户粘贴文案 → SSE 流式状态推送 → LLM 理解内容提取
+  {summary, stores: [{name, location, category, dishes: [{name, description}]}]}
+  → 地理编码地址 → 店铺去重(同名+同地点→追加菜品不重复) → 入库 → 返回结果
+
+  ### 查询 (query)
+  用户询问「XX 有什么好吃的」→ LLM 提取地点 → 地理编码 →
+  fetch_all_stores_by_location 返回全部匹配店铺(按距离排序) →
+  前端本地分页，首次显示 5 个，点击「查看更多」即时展开
+
+  ## API 路由
+  - POST /api/chat     — 主对话 (SSE)，意图路由: extract / query / more / other
+  - POST /api/ingest   — 直接录入店铺+菜品 (跳过 LLM)
+  - GET  /api/stores   — 店铺列表 (分页+筛选)
+  - GET  /api/stores/{id} — 店铺详情 (含全部菜品)
+  - DELETE /api/stores/{id} — 删除店铺 (级联删除菜品)
+  - GET  /api/stats    — 统计 (总数+分类分布)
+
+  ## 前端组件树
+  App → Header + ChatWindow + InputArea
+  ChatWindow → MessageBubble[] → StoreList → StoreCard[]
+  InputArea: 文字输入 + 图片粘贴(Ctrl+V) + 发送按钮
+  useChat hook: messages 状态、SSE 流式处理、本地分页(showMore)
+
+  ## 代码约定
+  - Python: 类型注解 (Pydantic models)，sync sqlite3 functions (no aiosqlite)
+  - TypeScript: strict mode, 类型定义在 types.ts
+  - 无 docstring，命名自解释
+  - 环境变量通过 config.py 加载，自动读取项目根 .env 文件
+  - LLM Prompt: 中文，要求返回纯 JSON，支持 code fence 兼容解析
+  - 菜品去重: DB 层 UNIQUE 索引 + 应用层 INSERT OR IGNORE
+
+  ## 领域知识
+  - 用户分享的内容可能是自由格式的美食日记（如 test.txt），
+    LLM 需从上下文中推断地点（如标题"广州接待备忘录"→默认广州，
+    明确标记"佛山："→下属餐厅归佛山）
+  - 👍/👎 标记表示推荐/不推荐，应记录到菜品 description
+  - 同一店铺多次分享 → 去重复用店铺，仅追加新菜品
+  - 地点筛选使用 SQL LIKE '%query%' 子串匹配
+
+rules:
+  proposal:
+    - Keep proposals under 500 words
+    - Always include a "Non-goals" section
+  tasks:
+    - Break tasks into chunks of max 2 hours

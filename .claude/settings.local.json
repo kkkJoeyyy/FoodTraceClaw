@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(openspec --help)",
+      "Bash(openspec change *)",
+      "Bash(openspec validate *)",
+      "Bash(openspec list *)",
+      "Bash(cd \"/Users/wuchuyi/Library/Mobile Documents/com~apple~CloudDocs/develop_projects/sdd_projects/FoodTraceClaw\" && mv openspec/changes/mvp-food-chat openspec/changes/food-trace-v1)",
+      "Bash(python3 -c \"from app.models import ChatRequest, ChatResponse, StoreOut, DishOut; print\\('models OK'\\)\")",
+      "Bash(python3 -c \"from app.config import LLM_PROVIDER, DB_PATH; print\\(f'config OK: LLM_PROVIDER={LLM_PROVIDER}'\\)\")",
+      "Bash(python3 -c \"from app.database import init_db, insert_store, insert_dish, get_store, get_stats; print\\('database OK'\\)\")",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npx vite *)",
+      "Bash(cat ~/.docker/daemon.json 2>/dev/null || echo \"No daemon.json found\")",
+      "Read(//Users/wuchuyi/.docker/**)",
+      "Bash(curl -s -N -X POST http://localhost:8000/api/chat -H 'Content-Type: application/json' -d '{\"message\":\"成都春熙路蜀大侠火锅，毛肚好吃！\",\"session_id\":\"test123\"}' --max-time 30)",
+      "Bash(curl -s -N --max-time 15 -X POST http://localhost:8000/api/chat -H 'Content-Type: application/json' -d '{\"message\":\"广州有什么好吃的？\",\"session_id\":\"test_query\"}')",
+      "Bash(curl -s -X DELETE http://localhost:8000/api/stores/1)",
+      "Bash(curl -s -N --max-time 10 -X POST http://localhost:8000/api/chat -H 'Content-Type: application/json' -d '{\"message\":\"佛山有什么好吃的？\",\"session_id\":\"test_fs\"}')",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -N --max-time 10 -X POST http://localhost:8000/api/chat -H 'Content-Type: application/json' -d '{\"message\":\"广州有什么好吃的？\",\"session_id\":\"test_gz\"}')",
+      "Bash(openspec archive *)"
+    ],
+    "additionalDirectories": [
+      "/Users/wuchuyi/Library/Mobile Documents/com~apple~CloudDocs/develop_projects/sdd_projects/FoodTraceClaw/openspec/changes/mvp-food-chat"
+    ]
+  }
+}
